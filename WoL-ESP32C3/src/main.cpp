@@ -1,21 +1,35 @@
 #include <Arduino.h>
+// #include <WiFi.h>
+#include "Task1_MQTT.h"
+// #include "API_WOL.h"
 
-#include <WiFi.h>
 
-#include <WakeOnLan.h>
-#define LED_PIN 8
-// put function declarations here:
+TaskHandle_t mqttTaskHandle = NULL;
+
 
 void setup() {
   Serial.begin(115200);
-  pinMode(LED_PIN, OUTPUT);  
+  for (auto i = 0; i < 10; i++) {
+    Serial.println("[SERIAL] init serial...");
+    delay(500);
+  }
+  vTaskDelay(pdMS_TO_TICKS(2000));
+  
+  Serial.println("Starting Wake-on-LAN Device...");
+  
+  // Create MQTT task
+  xTaskCreate(
+    Task1_MQTT,
+    "MQTT Task",
+    8192,
+    NULL,
+    1,
+    &mqttTaskHandle
+  );
+  
 }
 
+
 void loop() {
-  Serial.println("LED ON");
-  digitalWrite(LED_PIN, HIGH);
-  delay(1000);
-  Serial.println("LED OFF");
-  digitalWrite(LED_PIN, LOW);
-  delay(1000);
+
 }
